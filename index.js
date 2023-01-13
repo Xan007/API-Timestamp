@@ -1,32 +1,25 @@
-// index.js
-// where your node app starts
+import dotenv from "dotenv";
+dotenv.config();
 
-// init project
-var express = require('express');
-var app = express();
+import express from "express";
+import cors from "cors";
+import routes from "./routes/index.js";
 
-// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
-// so that your API is remotely testable by FCC 
-var cors = require('cors');
-app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// http://expressjs.com/en/starter/static-files.html
-app.use(express.static('public'));
+const app = express();
 
-// http://expressjs.com/en/starter/basic-routing.html
+app.use(cors({ optionsSuccessStatus: 200 }));
+app.use(express.json())
+app.use(express.static("public"));
+app.use("/api", routes);
+
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + '/views/index.html');
+  res.sendFile(__dirname + "/views/index.html");
 });
 
-
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-});
-
-
-
-// listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
+const listener = app.listen(process.env.PORT, function () {
+  console.log("Your app is listening on port " + listener.address().port);
 });
